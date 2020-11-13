@@ -11,11 +11,13 @@ import com.cg.iba.exception.InvalidDetailsException;
 
 public interface ITransactionService {
 
-	public Transaction createTransaction(Transaction transaction) throws InvalidDetailsException;
-	public Transaction viewTransaction(long transaction_id) throws DetailsNotFoundException;
-	public Transaction findTransactionById(long transaction_id) throws DetailsNotFoundException;
-	public  Set<Transaction> listAllTransactions(long accountId,LocalDate from, LocalDate to) throws
-													InvalidAccountException,EmptyListException;
-	public  Set<Transaction> getAllMyAccTransactions(long account_id) throws 
-							InvalidAccountException,EmptyListException;
+    public Transaction createTransaction(Transaction transaction) throws InvalidDetailsException;
+
+    public Transaction viewTransaction(long transaction_id) throws DetailsNotFoundException;
+
+    public Transaction findTransactionById(long transaction_id) throws DetailsNotFoundException;
+
+    public Set<Transaction> listAllTransactions(long accountId, LocalDate from, LocalDate to) throws InvalidAccountException, EmptyListException;
+
+    public Set<Transaction> getAllMyAccTransactions(long account_id) throws InvalidAccountException, EmptyListException;
 }

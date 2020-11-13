@@ -9,83 +9,68 @@ import javax.persistence.Id;
 
 @Entity
 public class Account {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long accountId;
-	private double interestRate;
-	private double balance;
-	private LocalDate dateOfOpening;
-	/*private Set<Customer> customers;
-	private Set<Nominee> nominees;
-	private Set<Beneficiary> beneficiaries; */
-	
-	
-	public Account() {
-		super();
-	}
-		
-	public Account(long accountId, double interestRate, double balance, LocalDate dateOfOpening) {
-		super();
-		this.accountId = accountId;
-		this.interestRate = interestRate;
-		this.balance = balance;
-		this.dateOfOpening = dateOfOpening;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long accountId;
+    private double interestRate;
+    private double balance;
+    private LocalDate dateOfOpening;
+    
+    /**
+     * default Constructor
+     */
+    public Account() {
+        super();
+    }
 
+    /**
+     * Parameterized Constructor
+     * 
+     * @param accountId
+     * @param interestRate
+     * @param balance
+     * @param dateOfOpening
+     */
+    public Account(long accountId, double interestRate, double balance, LocalDate dateOfOpening) {
+        super();
+        this.accountId = accountId;
+        this.interestRate = interestRate;
+        this.balance = balance;
+        this.dateOfOpening = dateOfOpening;
+    }
 
-	public long getAccountId() {
-		return accountId;
-	}
+    /*
+     * getters and setters for private fields
+     */
+    public long getAccountId() {
+        return accountId;
+    } 
 
-	public void setAccountId(long accountId) {
-		this.accountId = accountId;
-	}
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
 
-	public double getInterestRate() {
-		return interestRate;
-	}
+    public double getInterestRate() {
+        return interestRate;
+    }
 
-	public void setInterestRate(double interestRate) {
-		this.interestRate = interestRate;
-	}
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
 
-	public double getBalance() {
-		return balance;
-	}
+    public double getBalance() {
+        return balance;
+    }
 
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
-	public LocalDate getDateOfOpening() {
-		return dateOfOpening;
-	}
+    public LocalDate getDateOfOpening() {
+        return dateOfOpening;
+    }
 
-	public void setDateOfOpening(LocalDate dateOfOpening) {
-		this.dateOfOpening = dateOfOpening;
-	}
-
-	/*public Set<Customer> getCustomers() {
-		return customers;
-	}
-
-	public void setCustomers(Set<Customer> customers) {
-		this.customers = customers;
-	}
-
-	public Set<Nominee> getNominees() {
-		return nominees;
-	}
-
-	public void setNominees(Set<Nominee> nominees) {
-		this.nominees = nominees;
-	}
-
-	public Set<Beneficiary> getBeneficiaries() {
-		return beneficiaries;
-	}
-
-	public void setBeneficiaries(Set<Beneficiary> beneficiaries) {
-		this.beneficiaries = beneficiaries;
-	}*/
+    public void setDateOfOpening(LocalDate dateOfOpening) {
+        this.dateOfOpening = dateOfOpening;
+    }
 }

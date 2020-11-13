@@ -3,35 +3,53 @@ package com.cg.iba.exception;
 import java.util.Date;
 
 public class ExceptionDetails {
-	
-	private Date timestamp;
+
+    private Date timestamp;
     private String message;
     private String details;
-	public ExceptionDetails(Date timestamp, String message, String details) {
-		super();
-		this.timestamp = timestamp;
-		this.message = message;
-		this.details = details;
-	}
-	public ExceptionDetails() {
-		super();
-	}
-	public Date getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	public String getDetails() {
-		return details;
-	}
-	public void setDetails(String details) {
-		this.details = details;
-	}
+ 
+    /**
+     * parameterized Constructor
+     * 
+     * @param timestamp
+     * @param message
+     * @param details
+     */
+    public ExceptionDetails(Date timestamp, String message, String details) {
+        super();
+        this.timestamp = timestamp;
+        this.message = message;
+        this.details = details;
+    }
+
+    /*
+     * getters and setters for private fields
+     */
+    public ExceptionDetails() {
+        super();
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
 }
