@@ -1,5 +1,5 @@
 package com.cg.iba;
-
+ 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -55,12 +55,38 @@ class InternetBankingApplicationTests {
  
     @Test
     public void testCreateTransaction() throws InvalidDetailsException {
-        when(transactionRepository.save(transactionFirst)).thenReturn(transactionFirst);
+        
+        Account createAccount = new Account();
+        createAccount.setAccountId(1);
+        createAccount.setBalance(20000.0);
+        createAccount.setInterestRate(3.4);
+        createAccount.setDateOfOpening(LocalDate.parse("2010-01-25", DateTimeFormatter.ofPattern("yyyy-MM-d")));
+        Transaction createTransaction = new Transaction();         
+        createTransaction.setTransactionId(3);
+        createTransaction.setAmount(10000);
+        createTransaction.setTransactionType(TransactionType.DEBIT);
+        createTransaction.setDateTime(LocalDateTime.parse("2010-11-09 13:34:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        createTransaction.setBankAccount(accountFirst);
+        createTransaction.setTransactionStatus(TransactionStatus.SUCCESSFUL);
+        createTransaction.setTransactionRemarks("For Movie Tickets");
+        when(transactionRepository.save(createTransaction)).thenReturn(createTransaction);
         Transaction createdTransaction = null;
-        createdTransaction = transactionServiceImplementation.createTransaction(transactionFirst);
-
+        createdTransaction = transactionServiceImplementation.createTransaction(createTransaction);
+        
         assertNotNull(createdTransaction);
-        assertEquals(transactionFirst, createdTransaction);
+        
+        assertEquals(createTransaction.getTransactionId(), createdTransaction.getTransactionId());
+        assertEquals(createTransaction.getAmount(), createdTransaction.getAmount());
+        assertEquals(createTransaction.getTransactionType(), createdTransaction.getTransactionType());
+        assertEquals(createTransaction.getDateTime(), createdTransaction.getDateTime());
+        
+        assertEquals(createTransaction.getBankAccount().getAccountId(), createdTransaction.getBankAccount().getAccountId());
+        assertEquals(createTransaction.getBankAccount().getBalance(), createdTransaction.getBankAccount().getBalance());
+        assertEquals(createTransaction.getBankAccount().getDateOfOpening(), createdTransaction.getBankAccount().getDateOfOpening());
+        assertEquals(createTransaction.getBankAccount().getInterestRate(), createdTransaction.getBankAccount().getInterestRate());
+        
+        assertEquals(createTransaction.getTransactionStatus(), createdTransaction.getTransactionStatus());
+        assertEquals(createTransaction.getTransactionRemarks(), createdTransaction.getTransactionRemarks());
     }
 
     @Test
@@ -76,7 +102,6 @@ class InternetBankingApplicationTests {
                 accountFirst, TransactionStatus.SUCCESSFUL, "For Movie Tickets");
         
         when(transactionRepository.save(transactions)).thenReturn(transactions);
-        
         Assertions.assertThrows(InvalidDetailsException.class, () -> {
             transactionServiceImplementation.createTransaction(transactions);
         });

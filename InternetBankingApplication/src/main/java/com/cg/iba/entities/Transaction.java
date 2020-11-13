@@ -75,7 +75,7 @@ public class Transaction {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
+    } 
 
     public TransactionType getTransactionType() {
         return transactionType;
