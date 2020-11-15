@@ -22,7 +22,7 @@ import com.cg.iba.service.TransactionServiceImplementation;
 
 @RestController
 @RequestMapping("/Transactions")
-public class TransactionController {
+public class TransactionController { 
 
     @Autowired
     TransactionServiceImplementation transactionServiceImplementation;
@@ -92,7 +92,7 @@ public class TransactionController {
      * 
      * @param accountId
      * @param from
-     * @param to
+     * @param to 
      * @return ResponseEntity<Set<Transaction>>
      * @throws InvalidAccountException
      * @throws EmptyListException
