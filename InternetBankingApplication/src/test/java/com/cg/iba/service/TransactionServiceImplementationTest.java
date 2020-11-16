@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.cg.iba.entities.Account;
@@ -34,7 +35,7 @@ class TransactionServiceImplementationTest {
     @Mock 
     private ITransactionRepository transactionRepository;
 
-    @InjectMocks
+    @InjectMocks 
     private TransactionServiceImplementation transactionServiceImplementation;
 
     Account accountFirst = new Account(1, 20000.0, 3.4, LocalDate.parse("2010-01-25", DateTimeFormatter.ofPattern("yyyy-MM-d")));
@@ -67,7 +68,8 @@ class TransactionServiceImplementationTest {
         createTransaction.setBankAccount(createAccount);
         createTransaction.setTransactionStatus(TransactionStatus.SUCCESSFUL);
         createTransaction.setTransactionRemarks("For Movie Tickets");
-        when(transactionRepository.save(createTransaction)).thenReturn(createTransaction);
+        
+        when(transactionRepository.save(Mockito.any(Transaction.class))).thenReturn(createTransaction);
         Transaction createdTransaction = null;
         createdTransaction = transactionServiceImplementation.createTransaction(createTransaction);
 
