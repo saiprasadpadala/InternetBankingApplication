@@ -84,7 +84,7 @@ public class CustomerServiceImplementation implements ICustomerService {
 		boolean isDeleted = false;
 		Customer customer = customerRepository.findById(customer_id).orElse(null);
 		if(customer == null) {
-			throw new DetailsNotFoundException("Invalid customer details deletion failed");
+			throw new DetailsNotFoundException("Invalid customer id, deletion failed");
 		}else {
 			customerRepository.delete(customer);
 			isDeleted = true;
