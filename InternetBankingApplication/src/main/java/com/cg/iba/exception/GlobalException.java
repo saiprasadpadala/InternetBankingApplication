@@ -32,7 +32,21 @@ public class GlobalException {
         ExceptionDetails exceptionDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(exceptionDetails, HttpStatus.NOT_FOUND);
     }
-
+    
+    @ExceptionHandler(LowBalanceException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> resouceNotFoundException(LowBalanceException exception, WebRequest request) {
+        ExceptionDetails exceptionDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.NOT_FOUND);
+    }
+    
+    @ExceptionHandler(InvalidAmountException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> resouceNotFoundException(InvalidAmountException exception, WebRequest request) {
+        ExceptionDetails exceptionDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.NOT_FOUND);
+    }
+    
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> globleExcpetionHandler(Exception ex, WebRequest request) {

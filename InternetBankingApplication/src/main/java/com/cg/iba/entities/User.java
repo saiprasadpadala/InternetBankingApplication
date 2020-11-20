@@ -21,7 +21,6 @@ public class User {
         super();
     }
 
-    // parameterized constructor
     public User(long userId, String password, Role role) {
         super();
         this.userId = userId;
@@ -54,10 +53,8 @@ public class User {
         this.role = role;
     }
 
-    // tostring method
     @Override
     public String toString() {
         return "User [userId=" + userId + ", password=" + password + ", role=" + role + "]";
     }
-
 }

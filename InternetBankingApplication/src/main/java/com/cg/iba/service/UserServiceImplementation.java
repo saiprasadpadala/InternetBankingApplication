@@ -6,13 +6,14 @@ import org.springframework.stereotype.Service;
 import com.cg.iba.entities.User;
 import com.cg.iba.exception.DetailsNotFoundException;
 import com.cg.iba.exception.InvalidDetailsException;
-import com.cg.iba.repository.UserRepository;
+import com.cg.iba.repository.IUserRepository;
+
 
 @Service
 public class UserServiceImplementation implements IUserService {
 
     @Autowired
-    UserRepository userRepository;
+    IUserRepository userRepository;
     
     /**
      * addNewUser
