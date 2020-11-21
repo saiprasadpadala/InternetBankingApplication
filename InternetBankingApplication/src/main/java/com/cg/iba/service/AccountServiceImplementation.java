@@ -1,6 +1,9 @@
 package com.cg.iba.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.cg.iba.entities.Account;
 import com.cg.iba.entities.Beneficiary;
+import com.cg.iba.entities.Customer;
 import com.cg.iba.entities.SavingsAccount;
 import com.cg.iba.entities.TermAccount;
 import com.cg.iba.entities.Transaction;
@@ -19,6 +23,7 @@ import com.cg.iba.exception.InvalidAccountException;
 import com.cg.iba.exception.InvalidAmountException;
 import com.cg.iba.exception.InvalidDetailsException;
 import com.cg.iba.exception.LowBalanceException;
+import com.cg.iba.repository.CustomerRepository;
 import com.cg.iba.repository.IAccountRepository;
 import com.cg.iba.repository.IBeneficiaryRepository;
 import com.cg.iba.repository.IUserRepository;
@@ -32,6 +37,10 @@ public class AccountServiceImplementation implements IAccountService {
     private IBeneficiaryRepository beneficiaryRepository;
     @Autowired
     private IUserRepository userRepository;
+    
+    @Autowired
+    CustomerRepository customerRepository;
+    
     @Autowired
     private TransactionServiceImplementation transactionServiceImplementation;
 
@@ -40,7 +49,7 @@ public class AccountServiceImplementation implements IAccountService {
             throws LowBalanceException, InvalidAccountException, InvalidDetailsException {
 
         Account senderAccount = accountRepository.findById(senderAccounId).orElse(new Account());
-        if (senderAccount.getAccounId() != senderAccounId) {
+        if (senderAccount.getAccountId() != senderAccounId) {
             throw new InvalidAccountException("Invalid account id. Transferring money failed");
         } else {
             Beneficiary recieverAccount = beneficiaryRepository.findById(receiverAccountId).orElse(new Beneficiary());
@@ -54,10 +63,10 @@ public class AccountServiceImplementation implements IAccountService {
                     Transaction transaction = null;
                     Account account=null;
                     if(senderAccount instanceof SavingsAccount) {
-                        account=new SavingsAccount(senderAccount.getAccounId(),senderAccount.getInterestRate(),senderAccount.getBalance(),senderAccount.getDateOfOpening(),((SavingsAccount) senderAccount).getMinBalance(),((SavingsAccount) senderAccount).getFine());
+                        account=new SavingsAccount(senderAccount.getAccountId(),senderAccount.getInterestRate(),senderAccount.getBalance(),senderAccount.getDateOfOpening(),((SavingsAccount) senderAccount).getMinBalance(),((SavingsAccount) senderAccount).getFine());
                     }
                     else {
-                        account=new TermAccount(senderAccount.getAccounId(),senderAccount.getInterestRate(),senderAccount.getBalance(),senderAccount.getDateOfOpening(),((TermAccount) senderAccount).getAmount(),((TermAccount) senderAccount).getMonths(),((TermAccount) senderAccount).getPenaltyAmount());          
+                        account=new TermAccount(senderAccount.getAccountId(),senderAccount.getInterestRate(),senderAccount.getBalance(),senderAccount.getDateOfOpening(),((TermAccount) senderAccount).getAmount(),((TermAccount) senderAccount).getMonths(),((TermAccount) senderAccount).getPenaltyAmount());          
                     }
                     if (senderAccount.getBalance() < amount) {
                         transaction = new Transaction(amount, TransactionType.DEBIT, LocalDateTime.now(), account, TransactionStatus.FAILED, "Insufficient Amount");
@@ -77,7 +86,7 @@ public class AccountServiceImplementation implements IAccountService {
     @Override
     public Transaction withdraw(long accounId, double amount, long username, String password) throws LowBalanceException, InvalidDetailsException {
         Account withdrawerAccount = accountRepository.findById(accounId).orElse(new Account());
-        if(withdrawerAccount.getAccounId()!=accounId) {
+        if(withdrawerAccount.getAccountId()!=accounId) {
             throw new InvalidAccountException(" Invalid account id. No account found with id "+accounId);
         }
         else {
@@ -89,10 +98,10 @@ public class AccountServiceImplementation implements IAccountService {
                 Transaction transaction = null;
                 Account account=null;
                 if(withdrawerAccount instanceof SavingsAccount) {
-                    account=new SavingsAccount(withdrawerAccount.getAccounId(),withdrawerAccount.getInterestRate(),withdrawerAccount.getBalance(),withdrawerAccount.getDateOfOpening(),((SavingsAccount) withdrawerAccount).getMinBalance(),((SavingsAccount) withdrawerAccount).getFine());
+                    account=new SavingsAccount(withdrawerAccount.getAccountId(),withdrawerAccount.getInterestRate(),withdrawerAccount.getBalance(),withdrawerAccount.getDateOfOpening(),((SavingsAccount) withdrawerAccount).getMinBalance(),((SavingsAccount) withdrawerAccount).getFine());
                 }
                 else {
-                    account=new TermAccount(withdrawerAccount.getAccounId(),withdrawerAccount.getInterestRate(),withdrawerAccount.getBalance(),withdrawerAccount.getDateOfOpening(),((TermAccount) withdrawerAccount).getAmount(),((TermAccount) withdrawerAccount).getMonths(),((TermAccount) withdrawerAccount).getPenaltyAmount());          
+                    account=new TermAccount(withdrawerAccount.getAccountId(),withdrawerAccount.getInterestRate(),withdrawerAccount.getBalance(),withdrawerAccount.getDateOfOpening(),((TermAccount) withdrawerAccount).getAmount(),((TermAccount) withdrawerAccount).getMonths(),((TermAccount) withdrawerAccount).getPenaltyAmount());          
                 }
                 if(withdrawerAccount.getBalance()<amount) {
                     transaction = new Transaction(amount, TransactionType.DEBIT, LocalDateTime.now(), account, TransactionStatus.FAILED, "Insufficient Amount");
@@ -112,7 +121,7 @@ public class AccountServiceImplementation implements IAccountService {
     @Override
     public Transaction deposit(long accounId, double amount) throws InvalidAccountException, InvalidAmountException, InvalidDetailsException {
         Account depositorAccount = accountRepository.findById(accounId).orElse(new Account());
-        if(depositorAccount.getAccounId()!=accounId) {
+        if(depositorAccount.getAccountId()!=accounId) {
             throw new InvalidAccountException(" Invalid account id. No account found with id "+accounId);
         }
         else {
@@ -126,10 +135,10 @@ public class AccountServiceImplementation implements IAccountService {
                 //Account account=new Account(depositorAccount.getAccounId(),depositorAccount.getBalance(),depositorAccount.getInterestRate(),LocalDate.now());
                 Account account=null;
                 if(depositorAccount instanceof SavingsAccount) {
-                    account=new SavingsAccount(depositorAccount.getAccounId(),depositorAccount.getInterestRate(),depositorAccount.getBalance(),depositorAccount.getDateOfOpening(),((SavingsAccount) depositorAccount).getMinBalance(),((SavingsAccount) depositorAccount).getFine());
+                    account=new SavingsAccount(depositorAccount.getAccountId(),depositorAccount.getInterestRate(),depositorAccount.getBalance(),depositorAccount.getDateOfOpening(),((SavingsAccount) depositorAccount).getMinBalance(),((SavingsAccount) depositorAccount).getFine());
                 }
                 else {
-                    account=new TermAccount(depositorAccount.getAccounId(),depositorAccount.getInterestRate(),depositorAccount.getBalance(),depositorAccount.getDateOfOpening(),((TermAccount) depositorAccount).getAmount(),((TermAccount) depositorAccount).getMonths(),((TermAccount) depositorAccount).getPenaltyAmount());          
+                    account=new TermAccount(depositorAccount.getAccountId(),depositorAccount.getInterestRate(),depositorAccount.getBalance(),depositorAccount.getDateOfOpening(),((TermAccount) depositorAccount).getAmount(),((TermAccount) depositorAccount).getMonths(),((TermAccount) depositorAccount).getPenaltyAmount());          
                 }
                 
                 transaction = new Transaction(amount, TransactionType.CREDIT, LocalDateTime.now(), account, TransactionStatus.SUCCESSFUL, "deposit Successful");
@@ -162,49 +171,87 @@ public class AccountServiceImplementation implements IAccountService {
 
     @Override
     public SavingsAccount updateSavingsAccount(SavingsAccount saving) throws InvalidDetailsException {
-        
-        return null;
+        SavingsAccount updatedAccount = (SavingsAccount) accountRepository.findById(saving.getAccountId()).orElse(new SavingsAccount());
+        if(updatedAccount.getAccountId()!=saving.getAccountId()) {
+            throw new InvalidDetailsException("No savings found with id "+saving.getAccountId());
+        }else {
+            return accountRepository.save(saving);
+        }
     }
 
     @Override
     public TermAccount updateTermAccount(TermAccount term) throws InvalidDetailsException {
-        // TODO Auto-generated method stub
-        return null;
+        TermAccount updatedAccount = (TermAccount) accountRepository.findById(term.getAccountId()).orElse(new TermAccount());
+        if(updatedAccount.getAccountId()!=term.getAccountId()) {
+            throw new InvalidDetailsException("No savings found with id "+term.getAccountId());
+        }else {
+            return accountRepository.save(term);
+        }
     }
 
     @Override
     public boolean closeSavingsAccount(SavingsAccount accountNo) throws InvalidAccountException {
-        // TODO Auto-generated method stub
-        return false;
+        boolean isDeleted=false;
+        SavingsAccount deletedAccount = (SavingsAccount) accountRepository.findById(accountNo.getAccountId()).orElse(new SavingsAccount());
+        if(deletedAccount.getAccountId()!=accountNo.getAccountId()) {
+            throw new InvalidAccountException("No savings account found with id "+accountNo.getAccountId()+"to delete");
+        }else {
+            accountRepository.deleteById(accountNo.getAccountId());
+            isDeleted=true;
+        }
+        return isDeleted;
     }
 
     @Override
     public boolean closeTermAccount(TermAccount accountNo) throws InvalidAccountException {
-        // TODO Auto-generated method stub
-        return false;
+        boolean isDeleted=false;
+        TermAccount deletedAccount = (TermAccount) accountRepository.findById(accountNo.getAccountId()).orElse(new TermAccount());
+        if(deletedAccount.getAccountId()!=accountNo.getAccountId()) {
+            throw new InvalidAccountException("No term account found with id "+accountNo.getAccountId()+"to delete");
+        }else {
+            accountRepository.deleteById(accountNo.getAccountId());
+            isDeleted=true;
+        }
+        return isDeleted;
     }
 
     @Override
     public Account findAccountById(int account_id) throws InvalidAccountException {
-        // TODO Auto-generated method stub
-        return null;
+        Account fetchedAccount = accountRepository.findById((long) account_id).orElse(new Account());
+        if(fetchedAccount.getAccountId()!=account_id) {
+            throw new InvalidAccountException("No account found with id "+account_id+"to fetch");
+        }else {
+            return fetchedAccount;
+        }
     }
 
     @Override
     public Set<Account> viewAccounts(long customerId) throws DetailsNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        List<Account> customerAccountsList=new ArrayList<Account>();
+        customerAccountsList=accountRepository.viewAccounts(customerId);
+        if(customerAccountsList.isEmpty()) {
+            throw new DetailsNotFoundException("No accounts found for customer with id "+customerId+"to view");
+        }else {
+            Set<Account> customerAccountsSet = new HashSet<Account>();
+            customerAccountsSet.addAll(customerAccountsList);
+            return customerAccountsSet;
+        }
     }
 
     @Override
     public SavingsAccount viewSavingAcc(long customerId) throws DetailsNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        Customer fetchedCustomer = customerRepository.findById(customerId).orElse(new Customer());
+        if(fetchedCustomer.getCustomerId()!=customerId) {
+            throw new DetailsNotFoundException("Invalid customer. Customer with "+customerId+" is not registered");
+        }else {
+            SavingsAccount fecthedSavingsAccount = accountRepository.viewSavingAcc(customerId);
+            return fecthedSavingsAccount;
+        }
     }
 
     @Override
     public TermAccount viewTermAcc(long customerId) throws DetailsNotFoundException {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 

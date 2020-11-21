@@ -37,7 +37,8 @@ public interface IAccountService {
 	
 	public Set<Account> viewAccounts(long customerId) throws DetailsNotFoundException;
 	
-	public SavingsAccount viewSavingAcc(long customerId) throws DetailsNotFoundException ;
+	public SavingsAccount viewSavingAcc(long customerId) throws DetailsNotFoundException;
+	
 	public TermAccount viewTermAcc(long customerId) throws DetailsNotFoundException;
 
 }

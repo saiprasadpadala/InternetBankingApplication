@@ -19,7 +19,7 @@ import javax.persistence.OneToMany;
 public class Account {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO)
-	private long accounId;
+	private long accountId;
 	private double interestRate;
 	private double balance;
 	private LocalDate dateOfOpening;
@@ -37,17 +37,17 @@ public class Account {
         super();
     }
 	
-    public Account(long accounId, double interestRate, double balance, LocalDate dateOfOpening) {
+    public Account(long accountId, double interestRate, double balance, LocalDate dateOfOpening) {
         super();
-        this.accounId = accounId;
+        this.accountId = accountId;
         this.interestRate = interestRate;
         this.balance = balance;
         this.dateOfOpening = dateOfOpening;
     }
 
-    public Account(long accounId, double interestRate, double balance, LocalDate dateOfOpening, Set<Customer> customers, Set<Nominee> nominees, Set<Beneficiary> beneficiaries) {
+    public Account(long accountId, double interestRate, double balance, LocalDate dateOfOpening, Set<Customer> customers, Set<Nominee> nominees, Set<Beneficiary> beneficiaries) {
         super();
-        this.accounId = accounId;
+        this.accountId = accountId;
         this.interestRate = interestRate;
         this.balance = balance;
         this.dateOfOpening = dateOfOpening;
@@ -56,12 +56,12 @@ public class Account {
         this.beneficiaries = beneficiaries;
     }
    
-    public long getAccounId() {
-		return accounId;
+    public long getAccountId() {
+		return accountId;
 	}
 
 	public void setAccounId(long accounId) {
-		this.accounId = accounId;
+		this.accountId = accounId;
 	}
 
 	public double getInterestRate() {
