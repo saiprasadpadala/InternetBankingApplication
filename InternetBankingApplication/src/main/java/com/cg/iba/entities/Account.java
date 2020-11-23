@@ -24,7 +24,7 @@ public class Account {
 	private double balance;
 	private LocalDate dateOfOpening;
 	
-	@ManyToMany(mappedBy = "accounts")
+	@ManyToMany(mappedBy = "accounts",cascade=CascadeType.ALL)
 	private Set<Customer> customers;
 	
 	@OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)

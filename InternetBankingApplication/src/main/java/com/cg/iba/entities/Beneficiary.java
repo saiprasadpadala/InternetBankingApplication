@@ -25,24 +25,23 @@ public class Beneficiary {
     private Account bankAccount;
     public Beneficiary() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
-    public Beneficiary(long beneficiaryId, String beneficiaryName, long beneficiaryAccNo, String iFSC, AccountType accountType) {
+    public Beneficiary(long beneficiaryId, String beneficiaryName, long beneficiaryAccNo, String IFSC, AccountType accountType) {
         super();
         this.beneficiaryId = beneficiaryId;
         this.beneficiaryName = beneficiaryName;
         this.beneficiaryAccNo = beneficiaryAccNo;
-        IFSC = iFSC;
+        this.IFSC = IFSC;
         this.accountType = accountType;
     }
 
-    public Beneficiary(long beneficiaryId, String beneficiaryName, long beneficiaryAccNo, String iFSC, AccountType accountType, Account bankAccount) {
+    public Beneficiary(long beneficiaryId, String beneficiaryName, long beneficiaryAccNo, String IFSC, AccountType accountType, Account bankAccount) {
         super();
         this.beneficiaryId = beneficiaryId;
         this.beneficiaryName = beneficiaryName;
         this.beneficiaryAccNo = beneficiaryAccNo;
-        IFSC = iFSC;
+        this.IFSC = IFSC;
         this.accountType = accountType;
         this.bankAccount = bankAccount;
     }
@@ -75,8 +74,8 @@ public class Beneficiary {
         return IFSC;
     }
 
-    public void setIFSC(String iFSC) {
-        IFSC = iFSC;
+    public void setIFSC(String IFSC) {
+        this.IFSC = IFSC;
     }
 
     public AccountType getAccountType() {

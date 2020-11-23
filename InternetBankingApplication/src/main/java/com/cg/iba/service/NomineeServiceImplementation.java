@@ -6,18 +6,21 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.iba.entities.Account;
 import com.cg.iba.entities.Nominee;
 import com.cg.iba.exception.DetailsNotFoundException;
 import com.cg.iba.exception.EmptyListException;
 import com.cg.iba.exception.InvalidAccountException;
 import com.cg.iba.exception.InvalidDetailsException;
+import com.cg.iba.repository.IAccountRepository;
 import com.cg.iba.repository.INomineeRepository;
 @Service
 public class NomineeServiceImplementation implements INomineeService {
     
     @Autowired
     INomineeRepository nomineeRepository;
-
+    @Autowired
+    IAccountRepository accountRepository;
     /**
      * addNominee to database
      * <p>
@@ -101,10 +104,13 @@ public class NomineeServiceImplementation implements INomineeService {
      */
     @Override
     public Nominee findNomineeById(long nomineeId) throws DetailsNotFoundException {
-        Nominee obtainedNominee = nomineeRepository.findById(nomineeId).orElse(null);
-        if (obtainedNominee == null) {
+        Nominee obtainedNominee = nomineeRepository.findById(nomineeId).orElse(new Nominee());
+        if (obtainedNominee.getNomineeId()!=nomineeId) {
             throw new DetailsNotFoundException("Nominee not found with nominee id " + nomineeId + " to fetch");
         } else {
+            obtainedNominee.getBankAccount().setBeneficiaries(null);
+            obtainedNominee.getBankAccount().setCustomers(null);
+            obtainedNominee.getBankAccount().setNominees(null);
             return obtainedNominee;
         }
     }
@@ -124,12 +130,22 @@ public class NomineeServiceImplementation implements INomineeService {
      */
     @Override
     public Set<Nominee> listAllNominees(long accountid) throws InvalidAccountException, EmptyListException {
-        Set<Nominee> allNominees = new HashSet<Nominee>();
-        allNominees = nomineeRepository.listAllNominees(accountid);
-        if (allNominees.isEmpty()) {
-            throw new EmptyListException("No nominee found for account with id " + accountid);
-        } else {
-            return allNominees;
+        Account fetchedAccount = accountRepository.findById(accountid).orElse(new Account());
+        if(fetchedAccount.getAccountId()!=accountid) {
+            throw new InvalidAccountException("Invalid account id. No account found with id " + accountid);
+        }else {
+            Set<Nominee> allNominees = new HashSet<Nominee>();
+            allNominees = nomineeRepository.listAllNominees(accountid);
+            if (allNominees.isEmpty()) {
+                throw new EmptyListException("No nominee found for account with id " + accountid);
+            } else {
+                for(Nominee nominee:allNominees) {
+                    nominee.getBankAccount().setBeneficiaries(null);
+                    nominee.getBankAccount().setNominees(null);
+                    nominee.getBankAccount().setCustomers(null);
+                }
+                return allNominees;
+            }
         }
     }
 }

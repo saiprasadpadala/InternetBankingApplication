@@ -5,22 +5,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cg.iba.entities.Account;
 import com.cg.iba.entities.Customer;
 import com.cg.iba.exception.DetailsNotFoundException;
 import com.cg.iba.exception.EmptyListException;
 import com.cg.iba.exception.InvalidDetailsException;
-import com.cg.iba.repository.CustomerRepository;
+import com.cg.iba.repository.ICustomerRepository;
+
 
 @Service
 public class CustomerServiceImplementation implements ICustomerService {
 	
 	@Autowired
-	CustomerRepository customerRepository;
+	ICustomerRepository customerRepository;
 	
 	/**
      * addCustomer
@@ -33,7 +33,6 @@ public class CustomerServiceImplementation implements ICustomerService {
      * @throws InvalidDetailsException
      */
 	
-	@Transactional
 	public Customer addCustomer(Customer customer) throws InvalidDetailsException {
 		if(customer.getCustomerName().length()<=0)
 		{
@@ -56,7 +55,6 @@ public class CustomerServiceImplementation implements ICustomerService {
      * @throws InvalidDetailsException
      */
 
-	@Transactional
 	public Customer updateCustomer(Customer customer) throws InvalidDetailsException {
 		Customer existingCustomer = customerRepository.findById(customer.getCustomerId()).orElse(null);
 		if(existingCustomer == null)
@@ -79,14 +77,13 @@ public class CustomerServiceImplementation implements ICustomerService {
      * @throws DetailsNotFoundException
      */
 
-	@Transactional
 	public boolean deleteCustomer(long customer_id) throws DetailsNotFoundException {
 		boolean isDeleted = false;
 		Customer customer = customerRepository.findById(customer_id).orElse(null);
 		if(customer == null) {
 			throw new DetailsNotFoundException("Invalid customer id, deletion failed");
 		}else {
-			customerRepository.delete(customer);
+			customerRepository.deleteById(customer_id);
 			isDeleted = true;
 		}
 		return isDeleted;
@@ -103,16 +100,18 @@ public class CustomerServiceImplementation implements ICustomerService {
      * @throws EmptyListException
      */
 
-	@Transactional
 	public Set<Customer> listAllCustomers(double minBalance) throws EmptyListException {
 	    List<Customer> availableCustomersList = new ArrayList<Customer>();
 	    availableCustomersList = customerRepository.listAllcustomer(minBalance);
 	    if(availableCustomersList.isEmpty()) {
-	        throw new EmptyListException("No customers found with minBalance "+minBalance);
+	        throw new EmptyListException("No customer accounts found with minBalance "+minBalance);
 	    }
 	    else {
 	        Set<Customer> availableCustomersSet= new HashSet<Customer>();
 	            availableCustomersSet.addAll(availableCustomersList);
+	            for(Customer customer: availableCustomersSet) {
+	                customer.setAccounts(null);
+	            }
 	            return availableCustomersSet;
 		}
 	}
@@ -128,15 +127,18 @@ public class CustomerServiceImplementation implements ICustomerService {
      * @throws DetailsNotFoundException
      */
 
-	@Transactional
 	public List<Customer> viewCustomerDetails(long account_id) throws DetailsNotFoundException {
 		//Customer retrivedCustomer = customerRepository.findById(account_id).orElse(null);
+	    
 	    List<Customer> availableCustomersList = new ArrayList<Customer>();
 	    availableCustomersList = customerRepository.viewCustomerDetails(account_id);
 		if(availableCustomersList.isEmpty()) {
-			throw new DetailsNotFoundException("No customers found with id "+account_id+" to fetch");
+			throw new DetailsNotFoundException("No customers found with account id "+account_id+" to fetch");
 		}
 		else {
+		    for(Customer customer: availableCustomersList) {
+		        customer.setAccounts(null);
+		    }
 			return availableCustomersList;
 		}
 	}
@@ -151,14 +153,22 @@ public class CustomerServiceImplementation implements ICustomerService {
      * @return Customer
      * @throws DetailsNotFoundException
      */
-	
-	@Transactional
+
 	public Customer findCustomerById(long customer_id) throws DetailsNotFoundException {
 		Customer retrivedCustomer = customerRepository.findById(customer_id).orElse(null);
 		if(retrivedCustomer==null) {
 			throw new DetailsNotFoundException("No customer found with id "+customer_id+" to fetch");
 		}
 		else {
+		    //changes made for correct input format
+			//retrivedCustomer.setAccounts(null);
+		    Set<Account> customerAccountsSet=retrivedCustomer.getAccounts();
+		    for(Account account:customerAccountsSet) {
+		        account.setBeneficiaries(null);
+		        account.setCustomers(null);
+		        account.setNominees(null);
+		    }
+		    retrivedCustomer.setAccounts(customerAccountsSet);
 			return retrivedCustomer;
 		}
 	}

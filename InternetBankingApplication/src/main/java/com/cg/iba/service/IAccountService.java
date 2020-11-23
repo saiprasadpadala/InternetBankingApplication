@@ -1,5 +1,6 @@
 package com.cg.iba.service;
 
+import java.util.List;
 import java.util.Set;
 
 import com.cg.iba.entities.Account;
@@ -36,9 +37,9 @@ public interface IAccountService {
 	public  Account findAccountById(int account_id) throws InvalidAccountException;
 	
 	public Set<Account> viewAccounts(long customerId) throws DetailsNotFoundException;
-	
-	public SavingsAccount viewSavingAcc(long customerId) throws DetailsNotFoundException;
-	
-	public TermAccount viewTermAcc(long customerId) throws DetailsNotFoundException;
+	//Changed return type to list
+	public List<SavingsAccount> viewSavingAcc(long customerId) throws DetailsNotFoundException;
+	//Changed return type to list
+	public List<TermAccount> viewTermAcc(long customerId) throws DetailsNotFoundException;
 
 }

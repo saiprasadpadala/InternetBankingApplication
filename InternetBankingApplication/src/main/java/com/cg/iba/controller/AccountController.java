@@ -1,5 +1,6 @@
 package com.cg.iba.controller;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,14 +102,14 @@ public class AccountController {
     }
 
     @GetMapping("/viewSavingsAccount/{customerId}")
-    public ResponseEntity<SavingsAccount> viewSavingAcc(@PathVariable long customerId) throws DetailsNotFoundException {
-        SavingsAccount fecthedSavingsAccount = accountServiceImplementation.viewSavingAcc(customerId);
-        return new ResponseEntity<SavingsAccount>(fecthedSavingsAccount, HttpStatus.OK);
+    public ResponseEntity<List<SavingsAccount>> viewSavingAcc(@PathVariable long customerId) throws DetailsNotFoundException {
+        List<SavingsAccount> fecthedSavingsAccountList = accountServiceImplementation.viewSavingAcc(customerId);
+        return new ResponseEntity<List<SavingsAccount>>(fecthedSavingsAccountList, HttpStatus.OK);
     }
 
     @GetMapping("/viewTermAccount/{customerId}")
-    public ResponseEntity<TermAccount> viewTermAcc(@PathVariable long customerId) throws DetailsNotFoundException {
-        TermAccount fecthedTermAccount = accountServiceImplementation.viewTermAcc(customerId);
-        return new ResponseEntity<TermAccount>(fecthedTermAccount, HttpStatus.OK);
+    public ResponseEntity<List<TermAccount>> viewTermAcc(@PathVariable long customerId) throws DetailsNotFoundException {
+        List<TermAccount> fecthedTermAccountList = accountServiceImplementation.viewTermAcc(customerId);
+        return new ResponseEntity<List<TermAccount>>(fecthedTermAccountList, HttpStatus.OK);
     }
 }

@@ -1,8 +1,8 @@
 package com.cg.iba.entities;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,10 +27,10 @@ public class Customer {
     private Gender gender;
     
     //using many to many mapping
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="customers_accounts",joinColumns=@JoinColumn(name="customerId"),
     inverseJoinColumns=@JoinColumn(name="accountId"))
-    private Set<Account> accounts=new HashSet<>();
+    private Set<Account> accounts;
     
     //default constructor
     public Customer() {

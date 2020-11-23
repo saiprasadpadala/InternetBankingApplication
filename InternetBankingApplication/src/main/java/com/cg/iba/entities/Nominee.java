@@ -27,8 +27,7 @@ public class Nominee {
     private Account bankAccount;
     
 	public Nominee() {
-        super();
-        // TODO Auto-generated constructor stub
+        super();    
     }
 	
     public Nominee(long nomineeId, String name, String govtId, String govtIdType, String phoneNo, Relation relation) {
@@ -87,6 +86,14 @@ public class Nominee {
 	}
 	public void setRelation(Relation relation) {
 		this.relation = relation;
-	} 
-    
+	}
+
+    public Account getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(Account bankAccount) {
+        this.bankAccount = bankAccount;
+    } 
+	
  }

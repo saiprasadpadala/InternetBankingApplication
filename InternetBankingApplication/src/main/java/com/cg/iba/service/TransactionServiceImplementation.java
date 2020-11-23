@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cg.iba.entities.Account;
 import com.cg.iba.entities.Transaction;
 import com.cg.iba.exception.DetailsNotFoundException;
 import com.cg.iba.exception.EmptyListException;
 import com.cg.iba.exception.InvalidAccountException;
 import com.cg.iba.exception.InvalidDetailsException;
+import com.cg.iba.repository.IAccountRepository;
 import com.cg.iba.repository.ITransactionRepository;
 
 @Service
@@ -19,6 +22,9 @@ public class TransactionServiceImplementation implements ITransactionService {
 
     @Autowired
     ITransactionRepository transactionRepository;
+
+    @Autowired
+    IAccountRepository accountRepository;
 
     /**
      * createTransaction.
@@ -101,20 +107,25 @@ public class TransactionServiceImplementation implements ITransactionService {
      */
     @Override
     public Set<Transaction> listAllTransactions(long accountId, LocalDate from, LocalDate to) throws InvalidAccountException, EmptyListException {
-        /*
-         * need to verify accountId, if account id is valid then get all transactions
-         * else throw InvalidAccountException. (use findAccountById() method in
-         * IAccountService) if account id is valid then
-         */
-
-        List<Transaction> transactionsBetweenDatesList = new ArrayList<Transaction>();
-        transactionsBetweenDatesList = transactionRepository.listAllTransactions(accountId, from, to);
-        if (transactionsBetweenDatesList.isEmpty()) {
-            throw new EmptyListException("No Transactions found between " + from + " and " + to + " for account with id " + accountId);
+      
+        Account fetchedAccount = accountRepository.findById(accountId).orElse(new Account());
+        if (fetchedAccount.getAccountId() != accountId) {
+            throw new InvalidAccountException("Invalid account id. No account found with id " + accountId);
         } else {
-            Set<Transaction> transactionsBetweenDatesSet = new HashSet<Transaction>();
-            transactionsBetweenDatesSet.addAll(transactionsBetweenDatesList);
-            return transactionsBetweenDatesSet;
+            List<Transaction> transactionsBetweenDatesList = new ArrayList<Transaction>();
+            transactionsBetweenDatesList = transactionRepository.listAllTransactions(accountId, from, to);
+            if (transactionsBetweenDatesList.isEmpty()) {
+                throw new EmptyListException("No Transactions found between " + from + " and " + to + " for account with id " + accountId);
+            } else {
+                Set<Transaction> transactionsBetweenDatesSet = new HashSet<Transaction>();
+                transactionsBetweenDatesSet.addAll(transactionsBetweenDatesList);
+                for(Transaction transaction:transactionsBetweenDatesSet) {
+                    transaction.getBankAccount().setBeneficiaries(null);
+                    transaction.getBankAccount().setNominees(null);
+                    transaction.getBankAccount().setCustomers(null);
+                }
+                return transactionsBetweenDatesSet;
+            }
         }
     }
 
@@ -134,21 +145,25 @@ public class TransactionServiceImplementation implements ITransactionService {
      */
     @Override
     public Set<Transaction> getAllMyAccTransactions(long accountId) throws InvalidAccountException, EmptyListException {
-        /*
-         * need to verify accountId, if account id is valid then get all transactions
-         * else throw InvalidAccountException. (use findAccountById() method in
-         * IAccountService) if accountId is valid then
-         */
+        Account fetchedAccount = accountRepository.findById(accountId).orElse(new Account());
+        if (fetchedAccount.getAccountId() != accountId) {
+            throw new InvalidAccountException("Invalid account id. No account found with id " + accountId);
+        } else { 
+            List<Transaction> allAccountTransactionsList = new ArrayList<Transaction>();
+            allAccountTransactionsList = transactionRepository.getAllMyAccTransactions(accountId);
 
-        List<Transaction> allAccountTransactionsList = new ArrayList<Transaction>();
-        allAccountTransactionsList = transactionRepository.getAllMyAccTransactions(accountId);
-
-        if (allAccountTransactionsList.isEmpty()) {
-            throw new EmptyListException("No Transactions found for account with id " + accountId);
-        } else {
-            Set<Transaction> allAccountTransactionsSet = new HashSet<Transaction>();
-            allAccountTransactionsSet.addAll(allAccountTransactionsList);
-            return allAccountTransactionsSet;
+            if (allAccountTransactionsList.isEmpty()) {
+                throw new EmptyListException("No Transactions found for account with id " + accountId);
+            } else {
+                Set<Transaction> allAccountTransactionsSet = new HashSet<Transaction>();
+                allAccountTransactionsSet.addAll(allAccountTransactionsList);
+                for(Transaction transaction:allAccountTransactionsSet) {
+                    transaction.getBankAccount().setBeneficiaries(null);
+                    transaction.getBankAccount().setNominees(null);
+                    transaction.getBankAccount().setCustomers(null);
+                }
+                return allAccountTransactionsSet;
+            }
         }
     }
 }
